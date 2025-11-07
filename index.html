@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Descubra — Acesso Exclusivo</title>
+  <meta name="description" content="Acesso exclusivo. Clique e entre.">
+  <style>
+    /* ========= THEME ========= */
+    :root{
+      --bg:#050405;
+      --panel:#0d0d0d;
+      --muted:#bdb6b0;
+      --accent-gold:#e2b24a;
+      --accent-red:#d84040;
+      --glass: rgba(255,255,255,0.04);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Helvetica Neue";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#040404);color:#fff;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    .wrap{min-height:100%;display:flex;flex-direction:column}
+    /* ===== HERO / VIDEO ===== */
+    .hero{position:relative;height:92vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .bg-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(0.36) contrast(1.06)}
+    .bg-fade{position:absolute;inset:0;background:linear-gradient(180deg, rgba(5,4,5,0.2), rgba(0,0,0,0.7));pointer-events:none}
+    .brand{position:absolute;left:18px;top:14px;z-index:10;color:var(--muted);font-weight:700;letter-spacing:0.6px}
+    .hero-inner{position:relative;z-index:12;max-width:1100px;padding:28px;width:100%;display:flex;gap:24px;align-items:center;justify-content:space-between}
+    .left{
+      flex:1;min-width:260px;
+      display:flex;flex-direction:column;gap:16px;
+      align-items:flex-start;
+    }
+    .headline{font-size:clamp(26px,4.6vw,52px);line-height:1.02;margin:0;font-weight:800;letter-spacing:-0.5px}
+    .sub{color:var(--muted);font-size:16px;margin:0 0 6px}
+    .cta-row{display:flex;gap:12px;margin-top:6px}
+    .btn{
+      display:inline-flex;align-items:center;gap:10px;padding:13px 20px;border-radius:12px;font-weight:800;border:0;cursor:pointer;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+    .btn-primary{background:linear-gradient(90deg,var(--accent-gold),#f0c96d);color:#080808}
+    .btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:12px 16px}
+    .mini-note{font-size:13px;color:var(--muted)}
+    /* play badge on center */
+    .play-badge{position:absolute;left:50%;transform:translateX(-50%);bottom:18%;z-index:14;display:flex;flex-direction:column;align-items:center;gap:10px}
+    .play-circle{width:86px;height:86px;border-radius:999px;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.06)}
+    .play-triangle{width:0;height:0;border-left:22px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:6px}
+    /* right side: preview cards */
+    .right{width:360px;max-width:40%;min-width:240px}
+    .preview-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));padding:14px;border-radius:14px;backdrop-filter:blur(4px);box-shadow:0 8px 26px rgba(0,0,0,0.6)}
+    .preview-thumb{width:100%;height:190px;border-radius:10px;object-fit:cover;border:1px solid rgba(255,255,255,0.03)}
+    .preview-title{font-weight:700;margin:12px 0 6px}
+    .preview-text{color:var(--muted);font-size:14px;margin:0}
+    /* ===== content area ===== */
+    main.content{background:linear-gradient(180deg,#060606,#020202);padding:36px 18px 110px}
+    .container{max-width:1100px;margin:0 auto}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:22px}
+    .card{background:var(--panel);padding:18px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,0.6)}
+    .card h3{margin:0 0 8px}
+    .muted{color:var(--muted);font-size:14px}
+    /* sticky CTA */
+    .stickyBar{position:fixed;left:0;right:0;bottom:16px;display:flex;justify-content:center;pointer-events:none;z-index:60}
+    .stickyInner{pointer-events:auto;background:linear-gradient(90deg, rgba(0,0,0,0.65), rgba(0,0,0,0.45));padding:10px 16px;border-radius:999px;display:flex;gap:12px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,0.6)}
+    /* age modal (hidden by default) */
+    .ageModal{position:fixed;inset:0;background:linear-gradient(0deg, rgba(0,0,0,0.75), rgba(0,0,0,0.8));display:flex;align-items:center;justify-content:center;z-index:200;display:none}
+    .ageCard{background:#0b0b0b;padding:28px;border-radius:12px;text-align:center;max-width:420px}
+    .closeX{position:absolute;right:12px;top:12px;color:var(--muted);cursor:pointer}
+    /* responsive */
+    @media (max-width:960px){
+      .hero-inner{flex-direction:column;align-items:center;gap:18px;padding:18px}
+      .right{width:100%;max-width:480px}
+      .headline{font-size:clamp(22px,6.6vw,36px)}
+    }
+    @media (max-width:520px){
+      .play-circle{width:64px;height:64px}
+      .play-triangle{border-left:16px;border-top:10px;border-bottom:10px;margin-left:5px}
+      .right{display:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero" id="hero">
+      <!-- Poster fallback image; prefer local files in same folder -->
+      <video id="bgVideo" class="bg-media" playsinline muted loop preload="auto" poster="FB_IMG_1762464098957.jpg">
+        <source src="gol.mp4" type="video/mp4">
+        <!-- if browser can't play video, show first image -->
+      </video>
+      <img src="FB_IMG_1762464101290.jpg" alt="background" class="bg-media" style="opacity:0.06;filter:blur(1px) brightness(0.5);"/>
+      <div class="bg-fade" aria-hidden="true"></div>
+
+      <div class="brand">MARCA</div>
+
+      <div class="hero-inner container" role="region" aria-label="Vídeo e oferta">
+        <div class="left">
+          <h1 class="headline">Descubra o que ninguém te mostrou…</h1>
+          <p class="sub">Acesso exclusivo, vagas limitadas. Clique abaixo e entre agora — conteúdo liberado apenas para membros.</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" id="mainCta" href="https://t.me/+4FwlC3tPU-9hNTVk" target="_blank" rel="noopener noreferrer">
+              Entrar Agora
+            </a>
+            <button class="btn btn-outline" id="previewBtn" type="button">Assistir no site</button>
+          </div>
+          <div class="mini-note">Pagamento via PayPal aceito no grupo. Política de privacidade e termos no rodapé.</div>
+        </div>
+
+        <div class="right">
+          <div class="preview-card">
+            <img src="FB_IMG_1762464098957.jpg" alt="thumb" class="preview-thumb">
+            <div class="preview-title">Preview rápido</div>
+            <p class="preview-text muted">Veja um trecho explicativo. Clique em "Assistir no site" para scrolar até o vídeo e ver a demonstração.</p>
+            <div style="height:12px"></div>
+            <a class="btn btn-primary" href="#ofertas" onclick="document.getElementById('ofertas').scrollIntoView({behavior:'smooth'});return false">Ver Ofertas</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="play-badge" id="playBadge" aria-hidden="false">
+        <div class="play-circle" id="playBtn" title="Reproduzir">
+          <div class="play-triangle"></div>
+        </div>
+        <div class="muted">Assistir</div>
+      </div>
+    </div>
+
+    <main class="content container" id="ofertas">
+      <section>
+        <h2 style="margin:0 0 8px">Ofertas e detalhes</h2>
+        <p class="muted">Abaixo encontras pacotes, bônus e instruções de pagamento. Role para ver tudo.</p>
+        <div class="cards" style="margin-top:18px">
+          <div class="card">
+            <h3>Pacote VIP</h3>
+            <p class="muted">Acesso completo + conteúdos exclusivos e atendimento prioritário.</p>
+            <p style="margin-top:12px"><a class="btn btn-primary" href="https://t.me/+4FwlC3tPU-9hNTVk" target="_blank">Quero VIP</a></p>
+          </div>
+          <div class="card">
+            <h3>Pacote Standard</h3>
+            <p class="muted">Acesso ao conteúdo principal e atualizações semanais.</p>
+          </div>
+          <div class="card">
+            <h3>Bônus</h3>
+            <p class="muted">Materiais extras e ofertas temporárias.</p>
+          </div>
+        </div>
+      </section>
+
+      <section style="margin-top:28px" id="detalhes">
+        <h2 style="margin:0 0 8px">Como funciona</h2>
+        <p class="muted">Após clicar em "Entrar Agora" serás redirecionado ao grupo do Telegram, onde receberás instruções de acesso e pagamento (se necessário).</p>
+        <div style="height:14px"></div>
+        <div class="card">
+          <h3>FAQ Rápido</h3>
+          <p class="muted">Pagamento: PayPal. Garantia: conforme combinado no chat privado. Suporte via mensagem no Telegram.</p>
+        </div>
+      </section>
+    </main>
+
+    <div class="stickyBar" id="stickyBar">
+      <div class="stickyInner">
+        <div style="font-weight:700">Oferta limitada</div>
+        <a class="btn btn-primary" href="https://t.me/+4FwlC3tPU-9hNTVk" target="_blank" style="text-decoration:none">Entrar Agora</a>
+        <a class="btn btn-outline" href="#detalhes" onclick="document.getElementById('detalhes').scrollIntoView({behavior:'smooth'});return false">Informações</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Basic interactivity: play/pause video, scroll to offers
+    const video = document.getElementById('bgVideo');
+    const playBtn = document.getElementById('playBtn');
+    const previewBtn = document.getElementById('previewBtn');
+
+    // Try autoplay muted
+    function tryStartVideo(){
+      if(!video) return;
+      video.play().catch(()=>{/* autoplay blocked */});
+    }
+    window.addEventListener('load', tryStartVideo);
+
+    // toggle play/pause
+    playBtn.addEventListener('click', () => {
+      if(!video) return;
+      if(video.paused){
+        video.play().catch(()=>{});
+      } else {
+        video.pause();
+      }
+    });
+
+    // preview btn scrolls to video (hero)
+    previewBtn.addEventListener('click', () => {
+      window.scrollTo({top:0,behavior:'smooth'});
+      tryStartVideo();
+    });
+
+    // leadClick example (hook to tracking pixels)
+    function leadClick(name){
+      console.log('lead:',name);
+      // se usares Pixel do Facebook: fbq('track','Lead',{content_name:name});
+    }
+
+    // OPTIONAL: show age gate if needed (uncomment to enable)
+    /*
+    const ageModal = document.createElement('div');
+    ageModal.className='ageModal';
+    ageModal.innerHTML = `
+      <div class="ageCard" role="dialog" aria-modal="true">
+        <h3>Confirmar Idade</h3>
+        <p class="muted">Este conteúdo é indicado para maiores de 18 anos. Você confirma que tem 18 anos ou mais?</p>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:12px">
+          <button class="btn btn-primary" onclick="document.querySelector('.ageModal').style.display='none'">Tenho 18+</button>
+          <button class="btn btn-outline" onclick="window.location.href='about:blank'">Não — Sair</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(ageModal);
+    document.querySelector('.ageModal').style.display='flex';
+    */
+  </script>
+</body>
+              </html>
+              
